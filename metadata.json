@@ -1,0 +1,6 @@
+{
+  "name": "FocusBoard",
+  "description": "Um quadro de tarefas focado em produtividade, com timer pomodoro e log de atividades.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

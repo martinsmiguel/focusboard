@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "Courier New", Courier, monospace;
+
+  --color-bg: var(--bg);
+  --color-card-bg: var(--card-bg);
+  --color-accent: var(--accent);
+  --color-text-dim: var(--text-dim);
+  --color-border: var(--border-color);
+  
+  --color-main: var(--main-bg);
+  --color-text-primary: var(--text-primary);
+  
+  --color-status-pending-bg: var(--pending-bg);
+  --color-status-pending-text: var(--pending-text);
+  --color-status-progress-bg: var(--progress-bg);
+  --color-status-progress-text: var(--progress-text);
+  --color-status-completed-bg: var(--completed-bg);
+  --color-status-completed-text: var(--completed-text);
+}
+
+:root {
+  --bg: #F5F2F0; /* Warm Stone Paper feel */
+  --card-bg: #FFFFFF;
+  --accent: #D946EF; /* Watercolor Fuchsia */
+  --text-dim: #94A3B8;
+  --border-color: #E2E8F0;
+  --main-bg: #FBFBFA;
+  --text-primary: #1C1917;
+
+  /* Status watercolor/pastel - Light Mode */
+  --pending-bg: #FFF7ED;
+  --pending-text: #C2410C;
+  --progress-bg: #F0F9FF;
+  --progress-text: #0369A1;
+  --completed-bg: #F0FDF4;
+  --completed-text: #15803D;
+}
+
+.dark {
+  --bg: #0F0F11;
+  --card-bg: #1A1A1D;
+  --accent: #00FF9C;
+  --text-dim: #888888;
+  --border-color: #2D2D32;
+  --main-bg: #141417;
+  --text-primary: #F4F4F5;
+
+  --pending-bg: rgba(255, 255, 255, 0.05);
+  --pending-text: #71717A;
+  --progress-bg: rgba(0, 255, 156, 0.1);
+  --progress-text: #00FF9C;
+  --completed-bg: rgba(113, 113, 122, 0.1);
+  --completed-text: #71717A;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-bg text-text-primary transition-colors duration-500;
+  }
+}
+
+.kitchen-grid {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--bg);
+}
+
+.content-wrapper {
+  display: flex;
+  flex: 1;
+  min-height: 0; 
+}
+
+.sidebar-area {
+  background-color: var(--bg);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, transform 0.3s ease, background-color 0.5s ease;
+  width: 320px;
+  overflow: hidden;
+  z-index: 40;
+}
+
+.sidebar-area.collapsed {
+  width: 0px;
+  border-right-width: 0px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 1024px) {
+  .sidebar-area {
+    position: fixed; /* Changed from absolute to fixed to ensure it covers everything */
+    height: 100dvh;
+    left: 0;
+    top: 0;
+    box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+  }
+  
+  .sidebar-area.collapsed {
+    transform: translateX(-100%);
+    width: 320px;
+    opacity: 0;
+  }
+  
+  .sidebar-area:not(.collapsed) {
+    transform: translateX(0);
+    width: 85vw;
+    max-width: 320px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.main-content {
+  flex: 1;
+  background-color: var(--main-bg);
+  background-image: radial-gradient(#00000005 1px, transparent 0);
+  background-size: 24px 24px;
+  display: flex;
+  flex-direction: column;
+  padding: 3rem;
+  overflow-y: auto;
+  position: relative;
+  transition: background-color 0.5s ease;
+}
+
+.glass-card {
+  @apply bg-card-bg/70 backdrop-blur-3xl border border-border transition-all duration-500;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.05), 
+    0 10px 15px -3px rgba(0, 0, 0, 0.05),
+    inset 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.dark .glass-card {
+  @apply bg-card-bg/85 shadow-[0_20px_50px_rgba(0,0,0,0.5)];
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.timer-accent-glow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle at center, var(--accent), transparent 70%);
+  opacity: 0.05;
+  filter: blur(40px);
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .main-content {
+    padding: 1.5rem;
+    padding-top: 5rem; /* Space for the floating toggle */
+  }
+}
+
+.footer-area {
+  background-color: var(--bg);
+  border-top: 1px solid var(--border-color);
+  padding: 1rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 4rem;
+  z-index: 10;
+  transition: background-color 0.5s ease, border-color 0.5s ease;
+}
+
+@media (max-width: 1024px) {
+  /* On mobile/tablet, footer should probably be hidden or relative to main content if sidebar spans 100% height */
+  .footer-area {
+    position: relative;
+    z-index: 5;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-area {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.terminal-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.terminal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.terminal-scroll::-webkit-scrollbar-thumb {
+  background: var(--text-dim);
+  opacity: 0.3;
+  border-radius: 10px;
+}
